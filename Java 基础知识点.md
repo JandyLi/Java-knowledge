@@ -718,6 +718,43 @@ public class ArrayExer_1 {
 
 
 
+
+
+#### 可变个数的形参
+
+- JavaSE 5.0 中提供了Varargs (variable number of arguments) 机制，允许直接定义能和多个实参相匹配的形参。从而，可以用一种更简单的方式，来传递个数可变的实参
+
+```java
+//JDK 5.0以前：采用数组形参来定义方法，传入多个同一类型变量 
+public static void test(int a ,String[] books); 
+//JDK5.0：采用可变个数形参来定义方法，传入多个同一类型变量 
+public static void test(int a ,String…books);
+```
+
+
+
+##### 说明
+
+- 声明格式：方法名(参数的类型名 ...参数名)
+- 可变参数：方法参数部分指定类型的参数个数是可变多个：0个，1个或多个
+- 可变个数形参的方法与同名的方法之间，彼此构成重载
+- 可变参数方法的使用与方法参数部分使用数组是一致的
+- 方法的参数部分有可变形参，需要放在形参声明的最后
+- 在一个方法的形参位置，最多只能声明一个可变个数形参
+
+
+
+#### 方法参数的值传递机制
+
+- 方法，必须由其所在类或对象调用才有意义。若方法含有参数
+  - 形参：方法声明时的参数
+  - 实参：方法调用时实际传给形参的参数值
+- Java里方法的参数传递方式只有一种：值传递。 即将实际参数值的副本传入方法内，而参数本身不受影响
+  - 形参是基本数据类型：将实参基本数据类型变量的“ 数据值 ”传递给形参
+  - 形参是引用数据类型：将实参引用数据类型变量的“ 地址值 ”传递给形参
+
+
+
 #### 方法的重载
 
 ##### 重载的概念
@@ -753,39 +790,6 @@ double add(double x,double y)
 ```
 
 
-
-#### 可变个数的形参
-
-- JavaSE 5.0 中提供了Varargs (variable number of arguments) 机制，允许直接定义能和多个实参相匹配的形参。从而，可以用一种更简单的方式，来传递个数可变的实参
-
-```java
-//JDK 5.0以前：采用数组形参来定义方法，传入多个同一类型变量 
-public static void test(int a ,String[] books); 
-//JDK5.0：采用可变个数形参来定义方法，传入多个同一类型变量 
-public static void test(int a ,String…books);
-```
-
-
-
-##### 说明
-
-- 声明格式：方法名(参数的类型名 ...参数名)
-- 可变参数：方法参数部分指定类型的参数个数是可变多个：0个，1个或多个
-- 可变个数形参的方法与同名的方法之间，彼此构成重载
-- 可变参数方法的使用与方法参数部分使用数组是一致的
-- 方法的参数部分有可变形参，需要放在形参声明的最后
-- 在一个方法的形参位置，最多只能声明一个可变个数形参
-
-
-
-#### 方法参数的值传递机制
-
-- 方法，必须由其所在类或对象调用才有意义。若方法含有参数
-  - 形参：方法声明时的参数
-  - 实参：方法调用时实际传给形参的参数值
-- Java里方法的参数传递方式只有一种：值传递。 即将实际参数值的副本传入方法内，而参数本身不受影响
-  - 形参是基本数据类型：将实参基本数据类型变量的“ 数据值 ”传递给形参
-  - 形参是引用数据类型：将实参引用数据类型变量的“ 地址值 ”传递给形参
 
 
 
@@ -839,7 +843,14 @@ public static void main(String[]args){
 
 
 
+#### 重载（overload）和重写(override)的区别
 
+- 方法的重写和重载是 Java 多态性的不同表现
+- 重写是父类与子类之间多态性的一种表现，重载是一个类中多态性的一种表现
+- 如果在子类中定义某方法与其父类有相同的名称和参数，我们 说该方法被重写 
+- 子类的对象使用这个方法时，将调用子类中的定义，对它而言，父类中的定义如同被"屏蔽"了
+- 如果在一个类中定义了多个同名的方法， 它们或有不同的参数个数或有不同的参数类型，则称为方法的重载
+- Overloaded 的方法是可以改变返回值的类型
 
 
 
@@ -903,6 +914,81 @@ public static void main(String[]args){
 > 一个类可以创建多个重载的构造器
 >
 > 父类的构造器不可被子类继承
+
+
+
+
+
+### 代码块
+
+#### 代码块的作用
+
+- 对Java类或对象进行初始化
+
+#### 分类
+
+##### 静态代码块
+
+- 一个类中代码块若有修饰符，则只能被static修饰，称为静态代码块
+- 通常用于初始化static的属性
+
+```java
+class Person{
+    public static int total;
+    static{
+        total = 100;
+        //为total赋初值
+    }
+    ......//其他属性或方法声明
+}
+```
+
+###### 使用
+
+- 可以有输出语句
+- 可以对类的属性、类的声明进行初始化操作。
+- 不可以对非静态的属性初始化。即：不可以调用非静态的属性和方法。
+- 若有多个静态的代码块，那么按照从上到下的顺序依次执行。
+- 静态代码块的执行要先于非静态代码块。
+- 静态代码块随着类的加载而加载，且只执行一次。
+
+
+
+##### 非静态代码块
+
+- 没有使用static修饰的，为非静态代码块
+
+###### 使用
+
+- 可以有输出语句
+- 可以对类的属性、类的声明进行初始化操作。 
+- 除了调用非静态的结构外，还可以调用静态的变量或方法
+- 若有多个非静态的代码块，那么按照从上到下的顺序依次执行。
+-  每次创建对象的时候，都会执行一次。且先于构造器执行。
+
+
+
+```java
+class Person{
+    public static int total;
+    static{
+        total = 100;
+        System.out.println("in static block!")
+    }
+}
+
+public class PersonTest{
+    public static void main(String[]args){
+        System.out.println("total = " + Person.total);
+    }
+}
+```
+
+
+
+
+
+
 
 
 
@@ -1139,6 +1225,181 @@ public class Student extends Person {
 - 一个 native method 方法可以返回任何 java 类型，包括非基本类型，而且同样可以进行异常控制。
 - native method 的存在并不会对其他类调用这些本地方法产生任何影响，实际上调用这些方法的其他类甚至不知道它所调用的是一个本地方法。JVM 将控制调用本地方法的所有细节。
 - 如果一个含有本地方法的类被继承，子类会继承这个本地方法并且可以用 java 语言重写这个方法（如果需要的话）。
+
+
+
+#### static
+
+- 类属性作为该类各个对象之间共享的变量。在设计类时,分析哪些属性不因对象的不同而改变，将这些属性设置为类属性。相应的方法设置为类方法
+- 如果方法与调用者无关，则这样的方法通常被声明为类方法，由于不需要创建对象就可以调用类方法，从而简化了方法的调用
+- 类变量（类属性）由该类的所有实例共享
+
+
+
+```java
+class Circle{
+    private double radius;
+    public static String name = "这是一个圆";
+    
+    public static String getName(){
+        return name;
+    }
+    
+    public Circle(double radius){
+        this.radius = radius;
+    }
+    
+    public double findArea(){
+        return Math.PI * radius * radius;
+    }
+    
+    public void display(){
+        System.out.println("name : " + name + " radius:" + radius);
+    }
+    
+}
+
+
+public class staticTest{
+    public static void main(String[]args){
+        Circle c1 = new Circle(2.0);
+        Circle c2 = new Circle(3.0);
+        c1.display();
+        c2.display();
+    }
+}
+```
+
+
+
+##### 类变量应用举例
+
+```java
+class Preson{
+    private int id;
+    public static int total = 0;
+    public Person(){
+        total++;
+        id = total;
+    }
+    public static void main(String[]args){
+        Person Tom = new Person();
+        Tom.id = 0;
+        total = 100;
+        //不用创建对象就可以访问静态成员
+    }
+}
+```
+
+```java
+public class StaticDemo{
+    public static void main(String[]args){
+        Person.total = 100;
+        //不用创建对象就可以访问静态成员
+        //访问方式：类名.类属性，类名.类方法
+        System.out.println(Person.total);
+        Person c = new Person();
+        System.out.println(c.total);
+    }
+}
+```
+
+
+
+##### 类方法
+
+- 没有对象的实例时，可以用类名.方法名( )的形式访问由static修饰的类方法
+- 在static方法内部只能访问类的static修饰的属性或方法，不能访问类的非static的结构
+
+```java
+class Person{
+    private int id;
+    private static int total = 0;
+    private static int getTotalPerson(){
+        return tatal;
+    }
+    public Person(){
+        total++;
+        id = total;
+    }
+}
+
+public class PersonTest{
+    public static void main(String[]args){
+        System.out.println("Number of total is " + Person.getTotalPerson());
+        Person p1 = new Person();
+        System.out.println("Number of total is " + Person.getTotalPerson());
+    }
+}
+```
+
+
+
+##### 注意
+
+- 因为不需要实例就可以访问static方法，因此static方法内部不能有this。
+- static 修饰的方法不能被重写
+
+```java 
+class Person{
+    private int id;
+    private static int total = 0;
+    public static void setTotalPerson(int total){
+        this.total = total;
+    }
+    public Person(){
+        total++;
+        id = total;
+    }
+}
+
+public static PersonTest{
+    public static void mian(String[]args){
+        person.setTotalPerson(3);
+    }
+}
+```
+
+
+
+
+
+#### final
+
+- 在Java中声明类、变量和方法时，可使用关键字final来修饰,表示“最终的”。
+- final标记的类不能被继承。提高安全性，提高程序的可读性。
+  - String 类、System类、StringBuffer类
+- final标记的方法不能被子类重写
+  - 例如：Object 类中的getClass( )
+- final 标记的变量（成员变量或局部变量）即称为常量。名称大写，且只能被赋值一次
+  - final 标记的成员变量必须在声明时或在每个构造器中或代码块中显示赋值，然后才能使用
+
+##### 应用举例
+
+```java
+public final class Test{
+    public static int totalNumber = 5;
+    public final int ID;
+    
+    public Test(){
+        //可以在构造器中给final修饰的变量赋值
+        ID = ++totalNumber;
+    }
+    
+    public static void main(String[]args){
+        Test t = new Test();
+        System.out.println(t.ID);
+        final int I = 10;
+        final int J;
+        J = 20;
+        J = 30; //非法
+    }
+}
+```
+
+
+
+
 
 
 
@@ -1578,7 +1839,7 @@ class Window{
 
 # 设计模式
 
-### JavaBean
+## JavaBean
 
 - JavaBean是一种Java语言写成的可重用组件
 - 所谓javaBean，是指符合如下标准的Java类：
@@ -1590,7 +1851,7 @@ class Window{
 
 
 
-#### Java Bean示例
+### Java Bean示例
 
 ```java
 public class JavaBean {
@@ -1654,3 +1915,61 @@ public class JavaBean {
 
 
 
+
+
+
+
+## 单例设计模式
+
+- 所谓类的单例设计模式，就是采取一定的方法保证在整个的软件系统中，对某个类只能存在一个对象实例，并且该类只提供一个取得其对象实例的方法。
+-  如果我们要让类在一个虚拟机中只能产生一个对象，我们首先必须将类的构造器的访问权限设置为private，这样，就不能用new操作符在类的外部产生类的对象了，但在类内部仍可以产生该类的对象。
+- 因为在类的外部开始还无法得到类的对象，只能调用该类的某个静态方法以返回类内部创建的对象， 静态方法只能访问类中的静态成员变量，所以，指向类内部产生的该类对象 的变量也必须定义成静态的。
+
+
+
+### 饿汉式
+
+```java
+class Singleton{
+    //1、私有化构造器
+    private Singleton(){
+        
+    }
+    //2、内部提供一个当前类的实例
+    //4、此实例也必须静态化
+    private static Singleton single = new Singleton();
+    
+    //3、提供公共的静态的方法，返回当前类的对象
+    public static Singleton getINstance(){
+        return single;
+    }
+    
+}
+```
+
+
+
+### 懒汉式
+
+```java
+class Singleton{
+    private Singleton(){
+        
+    }
+    
+    private static Singleton single;
+    
+    public static Singleton getInstance(){
+   		if(single = null){
+            single = new Singleton();
+        }
+        return single;
+    }
+}
+```
+
+
+
+### 单例设计模式的优点
+
+- 由于单例模式只生成一个实例，减少了系统性能开销，当一个对象的产生需要比较多的资源时，如读取配置、产生其他依赖对象时，则可以通过在应用启动时直接产生一个单例对象，然后永久驻留内存的方式来解决。
