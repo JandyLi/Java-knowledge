@@ -994,6 +994,183 @@ public class PersonTest{
 
 
 
+
+
+### 内部类
+
+- 当一个事物的内部，还有一个部分需要一个完整的结构进行描述，而这个内部的完整的结构又只为外部事物提供服务，那么整个内部的完整结构最好使用内部类。
+
+
+- 在Java中，允许一个类的定义位于另一个类的内部，前者称为内部类，后者称为外部类。
+-  Inner class一般用在定义它的类或语句块之内，在外部引用它时必须给出完整的名称。
+
+> Inner class 的名字不能与包含它的外部类类名相同
+
+
+
+#### 分类
+
+##### 成员内部类
+
+- static成员内部类和非static成员内部类
+
+##### 局部内部类
+
+- 不谈修饰符
+- 匿名对象
+
+
+
+#### 成员内部类作为类的成员的角色
+
+- 和外部类不同，`Inner class`还可以声明为`private或protected； `
+- 可以调用外部类的结构 
+- `Inner class` 可以声明为`static`的，但此时就不能再使用外层类的`非static`的成员变量；
+
+
+
+#### 成员内部类作为类的角色
+
+- 可以在内部定义属性、方法、构造器等结构 
+- 可以声明为abstract类 ，因此可以被其它的内部类继承 
+- 可以声明为final的 
+- 编译以后生成OuterClass$InnerClass.class字节码文件（也适用于局部内部类）
+
+> 非static的成员内部类中的成员不能声明为 static的，只有在外部类或 static的成员内部类中才可声明static成员。
+>
+> 外部类访问成员内部类的成员，需要“内部类.成员”或“内部类对象.成员”的方式
+>
+> 成员内部类可以直接使用外部类的所有成员，包括私有的数据
+>
+> 当想要在外部类的静态成员部分使用内部类时，可以考虑内部类声明为静态的
+
+
+
+#### 举例
+
+```java
+class Outer{
+    private int s;
+    
+    public class Inner{
+        public void mb(){
+            s = 100;
+            System.out.println("在内部类Inner中 s = " + s);
+        }
+    }
+    
+    public void ma(){
+        Inner i = new Inner();
+        i.mb();
+    }
+}
+
+public class InnerText{
+    public static void main(String[]args){
+        Outer o = new Outer();
+        o.ma();
+    }
+}
+```
+
+
+
+```java
+public class Outer{
+    private int s = 111;
+    public class Inner{
+        private int s = 222;
+        public void mb(int s){
+            System.out.println(s); //局部变量s
+            System.out.println(this.s); // 内部类对象的属性s
+            System.out.println(Outer.this.s); // 外部类对象属性 s
+        }
+    }
+    
+    public static void main(String[]args){
+        Outer a = new Outer();
+        Outer.Inner b = a.new Inner();
+        b.mb(333);
+    }
+    
+}
+```
+
+
+
+
+
+#### 使用
+
+- 只能在声明它的方法或代码块中使用，而且是先声明后使用。
+- 除此之外的任何地方都不能使用该类但是它的对象可以通过外部方法的返回值返回使用，返回值类型只能是局部内部类的父类或父接口类型
+
+
+
+#### 特点
+
+- 内部类仍然是一个独立的类，在编译之后内部类会被编译成独立的.class文件，但是前面冠以外部类的类名和$符号，以及数字编号。 
+- 只能在声明它的方法或代码块中使用，而且是先声明后使用。
+- 除此之外的任何地方都不能使用该类。 
+- 局部内部类可以使用外部类的成员，包括私有的。
+-  局部内部类可以使用外部方法的局部变量，但是必须是final的。
+- 由局部内部类和局部变量的声明周期不同所致。 
+- 局部内部类和局部变量地位类似，不能使用public,protected,缺省,private 局部内部类不能使用static修饰，因此也不能包含静态成员
+
+
+
+
+
+#### 匿名内部类
+
+- 匿名内部类不能定义任何静态成员、方法和类，只能创建匿名内部类的一个实例。
+- 一个匿名内部类一定是在new的后面，用其隐含实现一个接口或 实现一个类。
+
+
+
+##### 特点
+
+- 匿名内部类必须继承父类或实现接口 
+- 匿名内部类只能有一个对象 
+- 匿名内部类对象只能使用多态形式引用
+
+
+
+##### 举例
+
+```java
+interface A{
+    public abstract void fun1();
+}
+
+public class Outer{
+    public static void main(String[]args){
+        new Outer().callInner(new A(){
+            //接口是不能new 但此处比较特殊是子类对象实现接口，只不过没有为对象取名
+            public void fun1(){
+                System.out.println("implement for fun1");
+            }
+        });// 两部写成一步
+    }
+    
+    public void callInner(A a){
+        a.fun1();
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
 ### 关键字
 
 #### this
@@ -1401,6 +1578,66 @@ public final class Test{
 
 
 
+#### abstract
+
+- 用`abstract`关键字来修饰一个类，这个类叫做抽象类。
+
+- 用`abstract`来修饰一个方法，该方法叫做抽象方法。
+
+  - 抽象方法：只有方法的声明，没有方法的实现。
+
+  - 以分号结束
+
+    ```java
+    public abstract void talk();
+    ```
+
+
+
+
+
+#### interface
+
+- 接口是抽象方法和常量值定义的集合。
+
+
+
+##### 特点
+
+- 用interface来定义。
+-  接口中的所有成员变量都默认是由`public static final`修饰的。
+-  接口中的所有抽象方法都默认是由`public abstract`修饰的。 
+- 接口中没有构造器。 
+- 接口采用多继承机制。
+
+
+
+##### 举例
+
+```java
+public interface Runner{
+    int ID = 1;
+    void start();
+    public void run();
+    void stop();
+}
+
+
+// 等价于 
+
+public interface Runner{
+    public static final int ID = 1;
+    public abstract void start();
+    public abstract void run();
+    public abstract void stop();
+}
+
+```
+
+
+
+
+
 
 
 
@@ -1487,6 +1724,245 @@ public final class Test{
 #### 成员变量
 
 - 不具备多态性，只看引用变量所声明的类
+
+
+
+
+
+### 抽象类与抽象方法
+
+- 随着继承层次中一个个新子类的定义，类变得越来越具体，而父类则更一般，更通用。
+
+- 类的设计应该保证父类和子类能够共享特征。
+
+- 有时将一个父 类设计得非常抽象，以至于它没有具体的实例，这样的类叫做抽象类。
+
+- 含有抽象方法的类必须被声明为抽象类
+
+- 抽象类不能被实例化。
+
+  抽象类是用来被继承的，抽象类的子类必须重 写父类的抽象方法，并提供方法体。
+
+- 若没有重写全部的抽象方法，仍为抽象类。
+
+> 不能用abstract 修饰变量、代码块、构造器
+>
+> 不能用abstract 修饰私用方法、静态方法、final的方法、final的类
+
+
+
+#### 抽象类举例
+
+```java
+abstract class A{
+    abstract void m1();
+    public void m2(){
+        System.out.println("A类中定义的m2方法")；
+    }
+}
+
+class B extends A{
+    void m1(){
+        System.out.println("B类中定义的m1方法")；
+    }
+}
+
+public class Test{
+    public static void main(String[]args){
+        A a = new B();
+        a.m1();
+        a.m2();
+    }
+}
+```
+
+
+
+#### 抽象类的应用
+
+- 抽象类是用来模型化那些父类无法确定全部实现，而是由其子类提供具体实现的对象的类。
+
+
+
+
+
+### 接口
+
+- 一方面，有时必须从几个类中派生出一个子类，继承它们所有的属性和方法 。 但是 ， Java 不支持多重继承 。 有了接口， 就可以得到多重继承的效果 。
+
+- 另一方面，有时必须从几个类中抽取出一些共同的行为特征，而它们之间又没有 `is-a` 的关系，仅仅是具有相同的行为特征而已。
+  - 例如：鼠标、键盘、打印机、扫描仪、摄像头、充电器、MP3机、手机、数码相机、移动硬盘等都支持USB连接。
+- 接口就是规范，定义的是一组规则，体现了现实世界中“ 如果你是/要...则必须能.. .”的思想。继承是一个" 是不是 "的关系，而接口实现则是 " 能不能 " 的关系。
+
+- 接口的本质是契约，标准，规范，就像我们的法律一样。制定好后大家都要遵守。
+
+![](Java基础知识点JPG/面向对象编程/接口_1.png)
+
+![](Java基础知识点JPG/面向对象编程/接口_2.png)
+
+
+
+#### 用法
+
+- 定义Java类的语法格式：先写extends，后写implements
+
+  ```java 
+  class SubClass extends SuperClass implements InterfaceA{ 
+  } 
+  ```
+
+- 一个类可以实现多个接口，接口也可以继承其它接口。
+
+- 实现接口的类中必须提供接口中所有方法的具体实现内容，方可实例化。否则，仍为抽象类。
+- 接口的主要用途就是被实现类实现。面向接口编程） 
+- 与继承关系类似，接口与实现类之间存在多态性 
+- 接口和类是并列关系，或者可以理解为一种特殊的类。从本质上讲， 接口是一种特殊的抽象类，这种抽象类中只包含常量和方法的定义 (JDK7.0及之前)，而没有变量和方法的实现。
+
+
+
+#### 举例
+
+```java
+interface Runner{
+    public void start();
+    public void run();
+    public void stop();
+}
+
+class Person implements Runner{
+    public void start(){
+        ......
+    }
+    public void run(){
+        ......
+    }
+    public void stop(){
+        ......
+    }
+}
+```
+
+
+
+
+
+```java
+interface Runner{
+    public void run();
+}
+
+interface Swimmer{
+    public double swim();
+}
+
+class Creator{
+    public int eat(){
+        ......
+    }
+}
+
+class Man extends Creator implements Runner,Swimmer{
+    public void run(){
+        ......
+    }
+    public double swim(){
+        ......
+    }
+    public int eat(){
+        ......
+    }
+}
+
+//一个类可以实现多个无关的接口
+```
+
+
+
+```java
+public class Test{
+    public static void main(String[]args){
+        Text t = new Text();
+        Man m = new Man();
+        t.m1(m);
+        t.m2(m);
+        t.m3(m);
+    }
+    public String m1(Runner f){
+        f.run();
+    }
+    public void m2(Swimmer s){
+        s.swim();
+    }
+    public void m3(Creator a){
+        a.eat();
+    }
+}
+
+//与继承关系类似，接口与实现类之间存在多态性
+```
+
+
+
+```java 
+interface MyInterface{
+    String s = "MyInterface";
+    public void absM1();
+}
+interface SubInterface extends MyInterface{
+    public void absM2();
+}
+
+public class SubAdapter implements SubInterface{
+    public void absM1(){
+        System.out.println("absM1");
+    }
+    public void absM2(){
+        System.out.println("absM2");
+    }
+}
+```
+
+> **实现类`SubAdapter`必须给出接口`SubInterface`以及父接口`MyInterface`中 所有方法的实现。否则，`SubAdapter`仍需声明为`abstract`的。**
+
+
+
+#### 接口与抽象类之间的对比
+
+![](Java基础知识点JPG/面向对象编程/接口与抽象类之间的对比.png)
+
+
+
+
+
+#### Java 8 中关于接口的改进
+
+- Java 8中，可以为接口添加静态方法和默认方法。
+
+##### 静态方法
+
+- 使用` static` 关键字修饰。可以通过接口直接调用静态方法，并执行其方法体。
+- 我们经常在相互一起使用的类中使用静态方法。
+- 可以在标准库中找到像`Collection/Collections`或者`Path/Paths`这样成对的接口和类。
+
+
+
+##### 默认方法
+
+- 默认方法使用` default `关键字修饰。可以通过实现类对象来调用。 我们在已有的接口中提供新方法的同时，还保持了与旧版本代码的兼容性。 
+- 比如：`java 8 API`中对`Collection`、`List`、`Comparator`等接口提供了丰富的默认方法。
+
+
+
+###### 注意
+
+- 若一个接口中定义了一个默认方法，而另外一个接口中也定义了一个同名同参数的方法（不管此方法是否是默认方法），在实现类同时实现了这两个接口时，会出现：接口冲突。
+
+  - 解决办法：实现类必须覆盖接口中同名同参数的方法，来解决冲突。
+- 若一个接口中定义了一个默认方法，而父类中也定义了一个同名同参数的非 抽象方法，则不会出现冲突问题。因为此时遵守：类优先原则。接口中具有 相同名称和参数的默认方法会被忽略。
+
+
+
+
 
 
 
@@ -1973,3 +2449,329 @@ class Singleton{
 ### 单例设计模式的优点
 
 - 由于单例模式只生成一个实例，减少了系统性能开销，当一个对象的产生需要比较多的资源时，如读取配置、产生其他依赖对象时，则可以通过在应用启动时直接产生一个单例对象，然后永久驻留内存的方式来解决。
+
+
+
+
+
+
+
+
+
+## 模版方法设计模式
+
+- 抽象类体现的就是一种模板模式的设计，抽象类作为多个子类的通用模板，子类在抽象类的基础上进行扩展、改造，但子类总体上会保留抽象类的行为方式。
+
+
+
+### 解决的问题
+
+- 当功能内部一部分实现是确定的，一部分实现是不确定的。这时可以把不确定的部分暴露出去，让子类去实现。
+- 换句话说，在软件开发中实现一个算法时，整体步骤很固定、通用， 这些步骤已经在父类中写好了。但是某些部分易变，易变部分可以抽象出来，供不同子类实现。这就是一种模板模式。
+
+
+
+### 举例
+
+```java
+abstract class Template{
+    public final void getTime(){
+        long start = System.currentTimeMillis();
+        code();
+        long end = System.currentTimeMillis();
+        System.out.println("执行时间是：" + (end - start));
+    }
+    
+    public abstract void code();
+}
+
+
+class SubTemplate extends Template{
+    public void code(){
+        for(int i = 0; i < 10000; i++){
+            System.out.println(i);
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+## 代理模式
+
+### 概述
+
+- 代理模式是Java开发中使用较多的一种设计模式。
+- 代理设计就是为其他对象提供一种代理以控制对这个对象的访问。
+
+
+
+### 举例
+
+```java
+interface Network{
+    public void browse();
+}
+
+//被代理
+class Realsever implements Network{
+    @Override 
+    public void browse(){
+        System.out.println("真实服务器上网浏览信息")
+    }
+}
+
+//代理类
+class ProxySever implements Network{
+    private Network network;
+    public ProxySever(Network network){
+        this.network = network;
+    }
+    public void check(){
+        System.out.println("检查网络连接等操作")；
+    }
+    public void browse(){
+        check();
+        network.browse();
+    }
+}
+
+public class ProxyDemo{
+    public static void main(String[]args){
+        Network net = new ProxySever(new RealSever());
+        net.browse();
+	}
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+## 工厂设计模式
+
+- 实现了创建者与调用者的分离 ，即将常见对象的具体过程屏蔽隔离起来，达到提高灵活性的目的。
+- 其实设计模式和面向对象设计原则都是为了使得开发项目更加容易扩展和维护，解决方式就是一个“分工”。
+
+
+
+
+
+### 面向对象的设计原则
+
+#### OCP（开闭原则，Open-Closed Principle）
+
+- 一个软件的实体应当对扩展开放，对修改关闭。
+-  当我们写完的代码，不能因为需求变化就修改。我们可以通过新增代码的方式来解决变化的需求。如果每次需求变动都去修改原有的代码，那原有的代码就存在被修改错误的风险，当然这其中存在有意和无意的修改，都会导致原有正常运行的功能失效的风险，这样很有可能会展开可怕的蝴蝶效应，使维护工作剧增。
+- 说到底，开闭原则除了表面上的可扩展性强以外，在企业中更看重的是维护成本。
+- 所以，开闭原则是设计模式的第一大原则，它的潜台词是：控制需求变动风险，缩小维护成本。
+
+
+
+#### DIP（依赖倒转原则，Dependence Inversion Principle）
+
+- 要针对接口编程，不要针对实现编程。 
+- 如果 A 中关联 B，那么尽量使得 B 实现某个接口，然后 A 与接口发生关系， 不与B 实现类发生关联关系。
+-  依赖倒置的潜台词是：面向抽象编程，解耦调用和被调用者。
+
+
+
+
+
+#### LOD（迪米特法则，Law Of Demeter）
+
+- 要求尽量的封装，尽量的独立，尽量的使用低级别的访问修饰符。这是封装特性的典型体现。
+
+
+- 一个类如果暴露太多私用的方法和字段，会让调用者很茫然。并且会给类造成不必要的判断代码。所以，我们使用尽量低的访问修饰符，让外界不知道我们的内部。这也是面向对象的基本思路。这是迪米特原则的一个特性，无法了解类 更多的私有信息。
+
+
+- 另外，迪米特原则要求类之间的直接联系尽量的少，两个类的访问，通过第三个中介类来实现。
+
+
+- 迪米特原则的潜台词是：不和陌生人说话，有事去中介。
+
+
+
+
+
+
+
+### 工厂模式的分类
+
+- 简单工厂模式：用来生产同一等级结构中的任意产品。（对于增加新的产品， 需要修改已有代码） 
+- 工厂方法模式：用来生产同一等级结构中的固定产品。（支持增加任意产品） 
+- 抽象工厂模式：用来生产不同产品族的全部产品。（对于增加新的产品，无能为力；支持增加产品族）
+
+
+
+### 举例
+
+#### 无工厂模式
+
+```java
+interface Car{
+    void run();
+}
+
+class Audi implements Car{
+    public void run(){
+        System.out.println("奥迪在跑");
+    }
+}
+
+class BYD implements Car{
+	public void run() {
+		System.out.println("比亚迪在跑");
+	} 
+}
+
+public class Client01{
+    public static void main(String[]args){
+        Car a = new Audi();
+        Car b = new BYD();
+        a.run();
+        b.run();
+    }
+}
+```
+
+
+
+
+
+#### 简单工厂模式
+
+- 调用者只要知道他要什么，从哪里拿，如何创建，不需要知道。分工，多出了一 个专门生产 Car 的实现类对象的工厂类。把调用者与创建者分离。
+- 简单工厂模式也叫静态工厂模式，就是工厂类一般是使用静态方法，通过接收的 参数的不同来返回不同的实例对象。
+- 对于增加新产品，不修改代码的话，是无法扩展的。违反了开闭原则（对扩展开放；对修改封闭）。
+
+
+
+```java
+interface Car{
+    void run();
+}
+
+class Audi implements Car{
+    public void run(){
+        System.out.println("奥迪在跑");
+    }
+}
+
+class BYD implements Car{
+	public void run() {
+		System.out.println("比亚迪在跑");
+	} 
+}
+
+public class Client01{
+    public static void main(String[]args){
+        Car a = new Audi();
+        Car b = new BYD();
+        a.run();
+        b.run();
+    }
+}
+
+
+class CarFactory{
+    public static Car getCar(String type){
+        if("奥迪".eauals(type)){
+            return new Audi();
+        }else if("比亚迪".equals(type)){
+            return new BYD();
+        }else{
+            return null;
+        }
+    }
+    
+/*
+	方法二
+	public static Car getAudi(){
+		return new Audi();
+	}
+	
+	public static Car getByd(){
+		return new BYD();
+	}
+*/
+}
+
+
+public class Clients02{
+    public static void main(String[]args){
+        Car a = CarFactory.getCar("奥迪");
+        a.run();
+        Car b = CarFactory.getCar("比亚迪");
+        b.run();
+    }
+}
+```
+
+
+
+#### 工厂方法模式
+
+```java
+interface Car{
+    void run();
+}
+
+class Audi implements Car{
+    public void run(){
+        System.out.println("奥迪在跑");
+    }
+}
+
+class BYD implements Car{
+	public void run() {
+		System.out.println("比亚迪在跑");
+	} 
+}
+
+interface Factory{
+    Caar getCar();
+}
+
+class AudiFactory implements Factory{
+    public Audi getCar(){
+        return new Audi();
+    }
+}
+
+class BydFactory implements Factory{
+    public BYD getCar(){
+        return new BYD();
+    }
+}
+
+public class Client{
+    public static void main(String[]args){
+        Car a = new AudiFactory().getCar();
+        Car b = new BydFactory().getCar();
+        a.run();
+        b.run();
+    }
+}
+```
+
+
+
+#### 抽象工厂模式
+
+- 抽象工厂模式和工厂方法模式的区别就在于需要创建对象的复杂程度上。
+- 而且 抽象工厂模式是三个里面最为抽象、最具一般性的。 
+- 抽象工厂模式的用意为：给客户端提供一个接口，可以创建多个产品族中的产品对象。
