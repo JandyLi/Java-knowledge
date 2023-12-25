@@ -2231,12 +2231,67 @@ public class ThrowsTest{
         }
     }
     public void readFile() throws IOException{
-        FileInputStream in = new FileINputStream("")
+        FileInputStream in = new FileINputStream("J andyLi.txt");
+        int b;
+        b = in.read();
+        while(b != -1){
+            System.out.print((char)b);
+            b = in.read;
+        }
+        in.close();
     }
 }
 ```
 
 
+
+
+
+### 重写方法声明抛出异常的原则
+
+- 重写方法不能抛出比被重写方法范围更大的异常类型 。在多态的情况下， 对methodA( )方法的调用-异常的捕获按父类声明的异常处理。
+
+```java
+public class A{
+    public void methodA() throws IOException{
+        ......
+    }
+}
+
+public class B1 extends A{
+    public void methodA() throws FileNotFoundException{
+        ......
+    }
+}
+
+public class B2 extends A{
+    public void methodA() throws Exception{
+        //报错
+    }
+}
+```
+
+
+
+
+
+### 手动抛出异常
+
+- Java异常类对象除在程序执行过程中出现异常时由系统自动生成并 抛出，也可根据需要使用人工创建并抛出。
+- 首先要生成异常类对象 ，然后通过throw语句实现抛出操作 (提交给Java运 行环境)。
+
+```java
+IOException e = new IOException();
+throw e;
+```
+
+
+
+- 可以抛出的异常必须是Throwable或其子类的实例。下面的语句在编译时将会产生语法错误
+
+```java
+throw new String("want to throw");
+```
 
 
 
@@ -2297,6 +2352,56 @@ public class IOExp{
 
 
 
+
+## 用户自定义异常
+
+- 一般地，用户自定义异常类都是`RuntimeException`的子类。 
+- 自定义异常类通常需要编写几个重载的构造器。
+-  自定义异常需要提供`serialVersionUID `
+- 自定义的异常通过throw抛出。 
+- 自定义异常最重要的是异常类的名字，当异常出现时，可以根据名字判断异常类型。
+- 用户自定义异常类`MyException`，用于描述数据取值范围错误信息。用户自己的异常类必须继承现有的异常类。
+
+```java
+class MyException extends Exception{
+    static final long serialVersionUID = 1234565432L;
+    private int idnumber;
+    
+    public MyException(Stirng message , int id){
+        super(message);
+        this.idnumber = id;
+    }
+    
+    public int getId(){
+        return idnumber;
+	}
+}
+```
+
+
+
+```java
+public class MyExpText{
+    public void regist(int num) throws MyException{
+        if(num < 0)
+            throw new MyException("人数为负值，不合理" , 3);
+        else
+            System.out.println("登记人数" + num);
+    }
+    public void manager(){
+        try{
+            regist(100);
+        }catch(MyException e){
+            System.out.println("登记失败，出错种类" + e.getID());
+        }
+        System.out.println("本次登记操作结束")；
+    }
+    public static void main(String[]args){
+        MySxpText t = new MyExptext();
+        t.manager();
+    }
+}
+```
 
 
 
