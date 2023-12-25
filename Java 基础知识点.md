@@ -1966,6 +1966,348 @@ public class SubAdapter implements SubInterface{
 
 
 
+# 异常处理
+
+## 异常概述与异常体系结构
+
+### 异常
+
+- 在`Java`语言中，将程序执行中发生的不正常情况称为异常。 (开发过程中的语法错误和逻辑错误不是异常)
+
+
+
+### 异常的分类
+
+#### ERROR
+
+- Java虚拟机无法解决的严重问题 。 
+  - 如： JVM 系统内部错误 、 资源耗尽等严重情况。
+
+- 一般不编写针对性 的代码进行处理。
+
+
+
+#### EXCEPTION
+
+- 其它因编程错误或偶然的外在因素导致的一般性问题，可以使用针对性的代码进行处理。
+  - 空指针访问
+  - 试图读取不存在的文件
+  - 网络连接中断
+  - 数组角标越界
+
+
+
+### 异常的解决方法
+
+- 遇到错误就终止程序的运行 。 
+- 由程序员在编写程序时 ， 就考虑到错误的检测、错误消息的提示，以及错误的处理。
+  - 捕获错误最理想的是在编译期间，但有的错误只有在运行时才会发生。比如：除数为0，数组下标越界等
+    - 分类：编译时异常和运行时异常
+
+
+
+### 运行时异常
+
+- 是指编译器不要求强制处置的异常。
+- 一般是指编程时的逻辑错误，是程序员应该积极避免其出现的异常。
+- `java.lang.RuntimeException`类及它的子类都是运行时异常。 
+- 对于这类异常，可以不作处理，因为这类异常很普遍，若全处理可能会对程序的可读性和运行效率产生影响。
+
+
+
+
+
+
+
+### 编译时异常
+
+- 是指编译器要求必须处置的异常。
+- 即程序在运行时由于外界因素造成的一般性异常。
+- 编译器要求Java程序必须捕获或声明所有编译时异常。 
+- 对于这类异常，如果程序不处理，可能会带来意想不到的结果。
+
+
+
+
+
+
+
+## 常见的异常
+
+```java
+public class IndexOutExp{
+    public static void main(String[]args){
+        String friends[] = {"LYZ" , "JandyLi" , "Son"};
+        for(int i = 0; i < 5; i++){
+            System.out.println(friends[i]);
+        }
+        System.out.println("\nthis is the end");
+    }
+}
+
+// ArrayIndexOutOfBoundsException
+```
+
+
+
+```java
+public class Order{
+    public static void main(String[]args){
+        Object obj = new Date();
+        Order order;
+        order = (Order)obj;
+        System.out.println(order);
+    }
+}
+
+// ClassCastException
+```
+
+
+
+```java
+public class NullRef{
+    int i = 1;
+    public static void main(String[]args){
+        NullRef t = new NullRef();
+        t = null;
+        System.out.println(t.i);
+    }
+}
+
+//NullPointerException
+```
+
+
+
+```java
+public class DivideZero{
+    int x;
+    public static void main(String[]args){
+        int y;
+        DivideZero c = new DivideZero();
+        y = 3 / c.x;
+        System.out.println("program ends ok!");
+    }
+}
+
+// ArithmeticException
+```
+
+
+
+
+
+## 异常处理机制
+
+- 在编写程序时，经常要在可能出现错误的地方加上检测的代码， 如进行x/y运算时，要检测分母为0，数据为空，输入的不是数据而是字符等。
+- 过多的if-else分支会导致程序的代码加长、臃肿， 可读性差。因此采用异常处理机制。
+
+- Java提供的是异常处理的抓抛模型。
+- Java程序的执行过程中如出现异常，会生成一个异常类对象，该异常对象将被提交给Java运行时系统，这个过程称为抛出 (throw)异常。
+
+
+
+### 异常对象的生成
+
+- 由虚拟机自动生成：程序运行过程中，虚拟机检测到程序发生了问题，如果在当前代码中没有找到相应的处理程序，就会在后台自动创建一个对应异常类的实例对象并抛出——自动抛出
+
+- 由开发人员手动创建：`Exception exception = new ClassCastException();`——创建好的异常对象不抛出对程序没有任何影响，和创建一个普通对象一样
+
+
+
+### 使用
+
+- 如果一个方法内抛出异常，该异常对象会被抛给调用 者方法中处理。如果异常没有在调用者方法中处理 ，它继续被抛给这个调用方法的上层方法。这个过程将一直继续下去 ，直到异常被处理。 这一过程称为捕获(catch)异常。
+- 如果一个异常回到 main()方法，并且main()也不处理 ，则程序运行终止。
+- 程序员通常只能处理Exception，而对Error无能为力。
+
+
+
+```java
+//异常处理是通过 try - catch - finally 语句实现的
+try{
+    ......
+    //可能产生异常的代码
+}
+catch(ExceptionName1 e){
+    ......
+    //当产生ExceptionName1型异常时的处置措施
+}
+catch(ExceptionName1 e){
+    ......
+    //当产生ExceptionName2型异常时的处置措施
+}
+finally{
+    ......
+    //无论是否发生异常，都无条件执行的语句
+}
+```
+
+
+
+#### try
+
+- 捕获异常的第一步是用 `try{......} `语句块选定捕获异常的范围 ， 将可能出现异常的代码放在try语句块中。
+
+
+
+#### catch 
+
+- 在`catch语句块`中是对异常对象进行处理的代码。每个try语句块可以伴随 一个或多个catch语句，用于处理可能产生的不同类型的异常对象。
+- 如果明确知道产生的是何种异常 ， 可以用该异常类作为 catch 的参数；也可以用其父类作为catch的参数。
+
+
+
+
+
+#### getMessage( )
+
+- 获取异常信息，返回字符串
+
+
+
+#### printStackTrace( )
+
+- 获取异常类名和异常信息，以及异常出现在程序中的位置。返回void。
+
+
+
+#### finally
+
+- 捕获异常的最后一步是通过`finally语句`为异常处理提供一个统一的出口，使得在控制流转到程序的其它部分以前，能够对程序的状态作统一的管理。
+- 不论在try代码块中是否发生了异常事件，catch语句是否执行，catch语句是否有异常，catch语句中是否有return， finally块中的语句都会被执行。
+- finally语句和catch语句是任选的
+
+
+
+#### 举例
+
+```java
+public class DivdeZero{
+    int x;
+    public static void main(String[]args){
+        int y;
+        DivideZero c = new DivideZero();
+        try{
+            y = 3 / c.x;
+        }catch(ArithmeticException e){
+            System.out.println("divide by zero error!");
+        }
+        System.out.println("program ends ok!");
+    }
+}
+```
+
+
+
+> 前面使用的异常都是RuntimeException类或是它的子类，这些类的异常的特点是：即使没有使用try和catch捕获，Java自己也能捕获，并且编译通过 ( 但运行时会发生异常使得程序运行终止 )。
+>
+> 如果抛出的异常是IOException等类型的非运行时异常，则必须捕获，否则编译错误。也就是说，我们必须处理编译时异常，将异常进行捕捉，转化为运行时异常
+
+
+
+
+
+### 声明抛出异常
+
+- 如果一个方法(中的语句执行时)可能生成某种异常，但是并不能确定如何处理这种异常，则此方法应显示地声明抛出异常，表明该方法将不对这些异常进行处理， 而由该方法的调用者负责处理。
+
+- 在方法声明中用throws语句可以声明抛出异常的列表，throws后面的异常类型可以是方法中产生的异常类型，也可以是它的父类。
+
+
+
+#### 举例
+
+```java
+import java.io.*;
+public class ThrowsTest{
+    public static void main(String[]args){
+        ThrowsTest t = new ThrowsTest();
+        try{
+            t.readFile();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+    public void readFile() throws IOException{
+        FileInputStream in = new FileINputStream("")
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### IOException 异常处理举例
+
+```java
+import java.io.*;
+public class IOXxp{
+    public static void main(String[]args){
+        FileInputSream in = new FileInputStream("JandyLi.txt");
+        int b;
+        b = in.read();
+        while(b!= -1){
+            System.out.print((char)b);
+            b = in.read();
+        }
+        in.close();
+    }
+}
+```
+
+
+
+
+
+```java
+import java.io.*;
+public class IOExp{
+    public static void main(String[]args){
+        try{
+            FileInputStream in = new FileInputStream("JandyLi.txt");
+            int b;
+            b = in.read();
+            while(b!= -1){
+                System.out.print((char) b);
+                b = in.read();
+            }
+            in.close();
+        }catch (IOException e){
+            System.out.println(e);
+        }finally{
+            System.out.println("It's ok!");
+        }
+    }
+}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 # Object 类的使用
